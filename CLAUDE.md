@@ -175,13 +175,21 @@ RecurringRule
 - [x] Lien depuis Settings, stack screens dans root layout
 - [x] Utilitaires : frequencyLabel(), getNextOccurrence()
 
-### Sprint 3 — Rapports (en cours)
-- [ ] Installer react-native-gifted-charts + react-native-linear-gradient
-- [ ] Sélecteur de période (Mois / Trimestre / Année)
-- [ ] Cartes résumé (total entrées, sorties, solde)
-- [ ] Donut chart : répartition dépenses par catégorie avec légende
-- [ ] Bar chart : entrées vs sorties sur les 6 derniers mois
-- [ ] Tableau récapitulatif par catégorie avec montants
+### Sprint 3 — Rapports ✅ TERMINÉ
+- [x] react-native-gifted-charts + react-native-linear-gradient installés
+- [x] Sélecteur de période : Mois / Trimestre / Année
+- [x] 3 cartes résumé : entrées / dépenses / solde coloré
+- [x] Donut chart : répartition dépenses par catégorie, centre montant total, légende icônes + %
+- [x] Bar chart : entrées (cyan) vs dépenses (rouge) sur 6 mois glissants
+- [x] Tableau détail par catégorie avec mini barre de progression
+- [x] États vides illustrés pour chaque section
+
+### Sprint 4 — Polish ✅ TERMINÉ
+- [x] app.json : slug, bundle IDs iOS/Android (com.pezpez.budgetfamily), splash indigo
+- [x] Pull-to-refresh (RefreshControl) sur la liste des transactions
+- [x] AnimatedBalance : count-up ease-out cubic sur le solde du Dashboard
+- [x] Empty states illustrés avec icônes MaterialCommunity sur toutes les pages
+- [x] eas.json : profil preview (APK Android) + production (AAB Android / iOS)
 
 ### Sprint 4 — Rapports (Jours 6-7)
 - [ ] Donut chart dépenses par catégorie

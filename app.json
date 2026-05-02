@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "BudgetFamily",
-    "slug": "BudgetFamily",
+    "slug": "budgetfamily",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -11,16 +11,18 @@
     "splash": {
       "image": "./assets/images/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#5C6BC0"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false,
+      "bundleIdentifier": "com.pezpez.budgetfamily"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#5C6BC0"
       },
+      "package": "com.pezpez.budgetfamily",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },

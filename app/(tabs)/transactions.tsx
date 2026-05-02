@@ -1,6 +1,7 @@
-import { useEffect, useCallback } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { useCallback, useState } from 'react';
+import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import { FAB, Text, ActivityIndicator } from 'react-native-paper';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
 
 import { useTransactionStore } from '../../store/useTransactionStore';
@@ -10,15 +11,23 @@ import { palette } from '../../constants/theme';
 
 export default function TransactionsScreen() {
   const { transactions, isLoading, selectedMonth, setSelectedMonth, loadTransactions } = useTransactionStore();
+  const [refreshing, setRefreshing] = useState(false);
 
-  useFocusEffect(
-    useCallback(() => { loadTransactions(); }, [])
-  );
+  useFocusEffect(useCallback(() => { loadTransactions(); }, []));
 
-  if (isLoading) {
+  async function onRefresh() {
+    setRefreshing(true);
+    await loadTransactions();
+    setRefreshing(false);
+  }
+
+  if (isLoading && !refreshing) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={palette.primary} />
+      <View style={styles.container}>
+        <MonthSelector value={selectedMonth} onChange={setSelectedMonth} />
+        <View style={styles.center}>
+          <ActivityIndicator size="large" color={palette.primary} />
+        </View>
       </View>
     );
   }
@@ -29,8 +38,11 @@ export default function TransactionsScreen() {
 
       {transactions.length === 0 ? (
         <View style={styles.center}>
-          <Text variant="bodyLarge" style={styles.empty}>Aucune transaction ce mois-ci</Text>
-          <Text variant="bodySmall" style={styles.hint}>Appuyez sur + pour en ajouter une</Text>
+          <MaterialCommunityIcons name="receipt-text-outline" size={64} color="#D1D5DB" />
+          <Text variant="titleMedium" style={styles.emptyTitle}>Aucune transaction</Text>
+          <Text variant="bodySmall" style={styles.emptyHint}>
+            Appuyez sur + pour enregistrer{'\n'}une dépense ou un revenu
+          </Text>
         </View>
       ) : (
         <FlatList
@@ -51,6 +63,14 @@ export default function TransactionsScreen() {
           )}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[palette.primary]}
+              tintColor={palette.primary}
+            />
+          }
         />
       )}
 
@@ -66,10 +86,10 @@ export default function TransactionsScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: palette.backgroundLight },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
   list: { padding: 16, paddingBottom: 100 },
-  empty: { color: palette.textSecondary, marginBottom: 4 },
-  hint: { color: palette.textSecondary },
+  emptyTitle: { color: palette.textSecondary, fontWeight: '600' },
+  emptyHint: { color: palette.textSecondary, textAlign: 'center', lineHeight: 20 },
   fab: {
     position: 'absolute', right: 20, bottom: 24,
     backgroundColor: palette.primary, borderRadius: 16,

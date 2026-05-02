@@ -9,6 +9,7 @@ import { fr } from 'date-fns/locale';
 import { useTransactionStore } from '../../store/useTransactionStore';
 import { palette } from '../../constants/theme';
 import { formatCurrency } from '../../utils/currency';
+import { AnimatedBalance } from '../../components/AnimatedBalance';
 
 export default function DashboardScreen() {
   const { transactions, selectedMonth, loadTransactions } = useTransactionStore();
@@ -49,9 +50,7 @@ export default function DashboardScreen() {
         {/* Balance card */}
         <Surface style={styles.balanceCard} elevation={2}>
           <Text variant="labelMedium" style={styles.cardLabel}>Solde du mois</Text>
-          <Text style={[styles.balanceAmount, { color: balanceColor }]}>
-            {balance >= 0 ? '+' : ''}{formatCurrency(balance)}
-          </Text>
+          <AnimatedBalance value={balance} color={balanceColor} />
           <View style={styles.incomeExpenseRow}>
             <View style={styles.incomeExpenseItem}>
               <MaterialCommunityIcons name="arrow-down-circle" size={18} color={palette.accent} />
@@ -81,7 +80,10 @@ export default function DashboardScreen() {
         <Surface style={styles.card} elevation={1}>
           <Text variant="titleSmall" style={styles.cardTitle}>Top dépenses</Text>
           {top3.length === 0 ? (
-            <Text variant="bodySmall" style={styles.empty}>Aucune dépense ce mois-ci</Text>
+            <View style={styles.emptySection}>
+              <MaterialCommunityIcons name="cart-off" size={32} color="#D1D5DB" />
+              <Text variant="bodySmall" style={styles.empty}>Aucune dépense ce mois-ci</Text>
+            </View>
           ) : (
             top3.map((cat) => (
               <View key={cat.name} style={styles.catRow}>
@@ -101,7 +103,10 @@ export default function DashboardScreen() {
         <Surface style={styles.card} elevation={1}>
           <Text variant="titleSmall" style={styles.cardTitle}>Dernières transactions</Text>
           {transactions.length === 0 ? (
-            <Text variant="bodySmall" style={styles.empty}>Aucune transaction ce mois-ci</Text>
+            <View style={styles.emptySection}>
+              <MaterialCommunityIcons name="receipt-text-outline" size={32} color="#D1D5DB" />
+              <Text variant="bodySmall" style={styles.empty}>Aucune transaction ce mois-ci</Text>
+            </View>
           ) : (
             transactions.slice(0, 5).map((tx) => (
               <View key={tx.id} style={styles.recentRow}>
@@ -138,7 +143,7 @@ const styles = StyleSheet.create({
   monthLabel: { color: palette.textSecondary, letterSpacing: 1, marginBottom: 4 },
   balanceCard: { borderRadius: 20, padding: 20 },
   cardLabel: { color: palette.textSecondary, marginBottom: 4 },
-  balanceAmount: { fontSize: 36, fontWeight: '800', marginBottom: 12 },
+  emptySection: { alignItems: 'center', gap: 6, paddingVertical: 8 },
   incomeExpenseRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
   incomeExpenseItem: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
   separator: { width: 1, height: 20, backgroundColor: '#E5E7EB' },
