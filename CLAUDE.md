@@ -167,13 +167,21 @@ RecurringRule
 - [x] Composants : TransactionItem, MonthSelector
 - [x] Stores Zustand : useTransactionStore, useCategoryStore
 
-### Sprint 2 — Récurrences (en cours)
-- [ ] Store useRecurringStore (CRUD règles)
-- [ ] Écran liste règles récurrentes avec prochaine occurrence
-- [ ] Formulaire nouvelle règle (sous-catégorie, montant, fréquence, date début)
-- [ ] Logique génération automatique des transactions au démarrage de l'app
-- [ ] Toggle actif/inactif sans suppression
-- [ ] Lien depuis Settings + stack screens dans root layout
+### Sprint 2 — Récurrences ✅ TERMINÉ
+- [x] useRecurringStore : CRUD règles récurrentes
+- [x] generateRecurringTransactions() au boot : calcule les dates dues, crée les transactions, met à jour lastGeneratedAt
+- [x] app/recurring/index.tsx : liste avec toggle ON/OFF, badge fréquence, prochaine occurrence, suppression
+- [x] app/recurring/new.tsx : formulaire type/montant/fréquence/date début/sous-catégorie/note
+- [x] Lien depuis Settings, stack screens dans root layout
+- [x] Utilitaires : frequencyLabel(), getNextOccurrence()
+
+### Sprint 3 — Rapports (en cours)
+- [ ] Installer react-native-gifted-charts + react-native-linear-gradient
+- [ ] Sélecteur de période (Mois / Trimestre / Année)
+- [ ] Cartes résumé (total entrées, sorties, solde)
+- [ ] Donut chart : répartition dépenses par catégorie avec légende
+- [ ] Bar chart : entrées vs sorties sur les 6 derniers mois
+- [ ] Tableau récapitulatif par catégorie avec montants
 
 ### Sprint 4 — Rapports (Jours 6-7)
 - [ ] Donut chart dépenses par catégorie
