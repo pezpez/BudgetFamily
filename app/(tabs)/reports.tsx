@@ -113,8 +113,10 @@ export default function ReportsScreen() {
                     innerRadius={72}
                     centerLabelComponent={() => (
                       <View style={styles.donutCenter}>
-                        <Text style={styles.donutCenterAmount}>{fmt(data.totalExpense)}</Text>
-                        <Text style={styles.donutCenterLabel}>total</Text>
+                        <Text style={[styles.donutCenterAmount, { color: colors.textPrimary }]}>
+                          {fmt(data.totalExpense)}
+                        </Text>
+                        <Text style={[styles.donutCenterLabel, { color: colors.textSecondary }]}>total</Text>
                       </View>
                     )}
                     showText

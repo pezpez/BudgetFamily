@@ -3,7 +3,7 @@ import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { format, addMonths, subMonths, isSameMonth } from 'date-fns';
 import { fr } from 'date-fns/locale';
-import { palette } from '../constants/theme';
+import { useAppTheme } from '../hooks/useAppTheme';
 
 interface Props {
   value: Date;
@@ -11,19 +11,22 @@ interface Props {
 }
 
 export function MonthSelector({ value, onChange }: Props) {
+  const { colors } = useAppTheme();
   const isCurrentMonth = isSameMonth(value, new Date());
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.surface }]}>
       <TouchableOpacity onPress={() => onChange(subMonths(value, 1))} style={styles.arrow}>
-        <MaterialCommunityIcons name="chevron-left" size={26} color={palette.primary} />
+        <MaterialCommunityIcons name="chevron-left" size={26} color={colors.primary} />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => !isCurrentMonth && onChange(new Date())} style={styles.label}>
-        <Text variant="titleMedium" style={styles.monthText}>
+        <Text variant="titleMedium" style={[styles.monthText, { color: colors.textPrimary }]}>
           {format(value, 'MMMM yyyy', { locale: fr })}
         </Text>
         {!isCurrentMonth && (
-          <Text variant="labelSmall" style={styles.backToNow}>Revenir au mois actuel</Text>
+          <Text variant="labelSmall" style={[styles.backToNow, { color: colors.primary }]}>
+            Revenir au mois actuel
+          </Text>
         )}
       </TouchableOpacity>
       <TouchableOpacity
@@ -33,7 +36,7 @@ export function MonthSelector({ value, onChange }: Props) {
         <MaterialCommunityIcons
           name="chevron-right"
           size={26}
-          color={isCurrentMonth ? '#D1D5DB' : palette.primary}
+          color={isCurrentMonth ? colors.border : colors.primary}
         />
       </TouchableOpacity>
     </View>
@@ -48,6 +51,6 @@ const styles = StyleSheet.create({
   arrow: { padding: 4 },
   disabled: { opacity: 0.4 },
   label: { alignItems: 'center', flex: 1 },
-  monthText: { color: palette.textPrimary, fontWeight: '700', textTransform: 'capitalize' },
-  backToNow: { color: palette.primary, marginTop: 2 },
+  monthText: { fontWeight: '700', textTransform: 'capitalize' },
+  backToNow: { marginTop: 2 },
 });

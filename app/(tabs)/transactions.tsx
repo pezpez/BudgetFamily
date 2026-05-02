@@ -41,8 +41,8 @@ export default function TransactionsScreen() {
       {transactions.length === 0 ? (
         <View style={styles.center}>
           <MaterialCommunityIcons name="receipt-text-outline" size={64} color="#D1D5DB" />
-          <Text variant="titleMedium" style={styles.emptyTitle}>Aucune transaction</Text>
-          <Text variant="bodySmall" style={styles.emptyHint}>
+          <Text variant="titleMedium" style={[styles.emptyTitle, { color: colors.textSecondary }]}>Aucune transaction</Text>
+          <Text variant="bodySmall" style={[styles.emptyHint, { color: colors.textSecondary }]}>
             Appuyez sur + pour enregistrer{'\n'}une dépense ou un revenu
           </Text>
         </View>
@@ -90,8 +90,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: palette.backgroundLight },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8 },
   list: { padding: 16, paddingBottom: 100 },
-  emptyTitle: { color: palette.textSecondary, fontWeight: '600' },
-  emptyHint: { color: palette.textSecondary, textAlign: 'center', lineHeight: 20 },
+  emptyTitle: { fontWeight: '600' },
+  emptyHint: { textAlign: 'center', lineHeight: 20 },
   fab: {
     position: 'absolute', right: 20, bottom: 24,
     backgroundColor: palette.primary, borderRadius: 16,

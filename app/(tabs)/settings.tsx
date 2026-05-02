@@ -142,17 +142,24 @@ export default function SettingsScreen() {
         <Divider style={{ marginVertical: 8 }} />
 
         {/* Recurring shortcut */}
-        <TouchableOpacity style={styles.recurringLink} onPress={() => router.push('/recurring/index')}>
+        <TouchableOpacity
+          style={[styles.recurringLink, { backgroundColor: colors.surface }]}
+          onPress={() => router.push('/recurring/index')}
+        >
           <View style={styles.recurringLeft}>
-            <View style={styles.recurringIcon}>
+            <View style={[styles.recurringIcon, { backgroundColor: palette.primary + '22' }]}>
               <MaterialCommunityIcons name="repeat" size={22} color={palette.primary} />
             </View>
             <View>
-              <Text variant="bodyMedium" style={styles.recurringTitle}>Récurrences</Text>
-              <Text variant="labelSmall" style={styles.recurringSubtitle}>Dépenses et revenus automatiques</Text>
+              <Text variant="bodyMedium" style={[styles.recurringTitle, { color: colors.textPrimary }]}>
+                Récurrences
+              </Text>
+              <Text variant="labelSmall" style={[styles.recurringSubtitle, { color: colors.textSecondary }]}>
+                Dépenses et revenus automatiques
+              </Text>
             </View>
           </View>
-          <MaterialCommunityIcons name="chevron-right" size={22} color={palette.textSecondary} />
+          <MaterialCommunityIcons name="chevron-right" size={22} color={colors.textSecondary} />
         </TouchableOpacity>
 
         <Divider style={{ marginVertical: 8 }} />
@@ -182,7 +189,7 @@ export default function SettingsScreen() {
         <Divider style={{ marginVertical: 8 }} />
 
         <Text variant="titleMedium" style={[styles.sectionTitle, { color: colors.textPrimary }]}>Catégories & Sous-catégories</Text>
-        <Text variant="bodySmall" style={styles.hint}>Appuyez sur la corbeille pour supprimer</Text>
+        <Text variant="bodySmall" style={[styles.hint, { color: colors.textSecondary }]}>Appuyez sur la corbeille pour supprimer</Text>
 
         {categories.map((cat) => (
           <Surface key={cat.id} style={styles.catCard} elevation={1}>

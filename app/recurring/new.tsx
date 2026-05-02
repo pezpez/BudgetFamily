@@ -10,6 +10,7 @@ import { fr } from 'date-fns/locale';
 import { useCategoryStore } from '../../store/useCategoryStore';
 import { useRecurringStore } from '../../store/useRecurringStore';
 import { useCurrency } from '../../hooks/useCurrency';
+import { useAppTheme } from '../../hooks/useAppTheme';
 import { palette } from '../../constants/theme';
 
 type TxType = 'expense' | 'income';
@@ -20,6 +21,7 @@ export default function NewRecurringScreen() {
   const { categories, loadCategories } = useCategoryStore();
   const { addRule } = useRecurringStore();
   const { symbol } = useCurrency();
+  const { colors } = useAppTheme();
 
   const [type, setType] = useState<TxType>('expense');
   const [amount, setAmount] = useState('');
@@ -65,14 +67,16 @@ export default function NewRecurringScreen() {
       {/* Type toggle */}
       <View style={styles.typeRow}>
         <TouchableOpacity
-          style={[styles.typeBtn, type === 'expense' && { backgroundColor: palette.danger }]}
+          style={[styles.typeBtn, { backgroundColor: colors.surfaceVariant },
+            type === 'expense' && { backgroundColor: palette.danger }]}
           onPress={() => setType('expense')}
         >
           <MaterialCommunityIcons name="arrow-up-circle" size={20} color={type === 'expense' ? '#fff' : palette.danger} />
           <Text style={[styles.typeBtnLabel, { color: type === 'expense' ? '#fff' : palette.danger }]}>Dépense</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.typeBtn, type === 'income' && { backgroundColor: palette.accent }]}
+          style={[styles.typeBtn, { backgroundColor: colors.surfaceVariant },
+            type === 'income' && { backgroundColor: palette.accent }]}
           onPress={() => setType('income')}
         >
           <MaterialCommunityIcons name="arrow-down-circle" size={20} color={type === 'income' ? '#fff' : palette.accent} />
@@ -88,12 +92,12 @@ export default function NewRecurringScreen() {
           keyboardType="decimal-pad"
           placeholder="0,00"
           label={`Montant (${symbol})`}
-          style={styles.input}
+          style={[styles.input, { backgroundColor: colors.inputBg }]}
           textColor={typeColor}
         />
 
         {/* Frequency */}
-        <Text variant="labelLarge" style={styles.label}>Fréquence</Text>
+        <Text variant="labelLarge" style={[styles.label, { color: colors.textSecondary }]}>Fréquence</Text>
         <SegmentedButtons
           value={frequency}
           onValueChange={(v) => setFrequency(v as Frequency)}
@@ -107,13 +111,13 @@ export default function NewRecurringScreen() {
         />
 
         {/* Start date */}
-        <Text variant="labelLarge" style={[styles.label, { marginTop: 16 }]}>Date de début</Text>
+        <Text variant="labelLarge" style={[styles.label, { color: colors.textSecondary, marginTop: 16 }]}>Date de début</Text>
         <TouchableOpacity
-          style={[styles.datePicker, { borderColor: theme.colors.outline }]}
+          style={[styles.datePicker, { backgroundColor: colors.inputBg, borderColor: colors.border }]}
           onPress={() => setShowDatePicker(true)}
         >
-          <MaterialCommunityIcons name="calendar" size={20} color={palette.textSecondary} />
-          <Text style={styles.dateText}>
+          <MaterialCommunityIcons name="calendar" size={20} color={colors.textSecondary} />
+          <Text style={[styles.dateText, { color: colors.textPrimary }]}>
             {format(startDate, 'EEEE d MMMM yyyy', { locale: fr })}
           </Text>
         </TouchableOpacity>
@@ -130,7 +134,7 @@ export default function NewRecurringScreen() {
         )}
 
         {/* Subcategory */}
-        <Text variant="labelLarge" style={[styles.label, { marginTop: 16 }]}>Catégorie</Text>
+        <Text variant="labelLarge" style={[styles.label, { color: colors.textSecondary, marginTop: 16 }]}>Catégorie</Text>
         {categories.map((cat) => (
           <View key={cat.id}>
             <Text variant="labelSmall" style={[styles.catHeader, { color: cat.color }]}>
@@ -142,11 +146,12 @@ export default function NewRecurringScreen() {
                 return (
                   <TouchableOpacity
                     key={sub.id}
-                    style={[styles.subChip, active && { backgroundColor: cat.color, borderColor: cat.color }]}
+                    style={[styles.subChip, { backgroundColor: colors.surfaceVariant, borderColor: colors.border },
+                      active && { backgroundColor: cat.color, borderColor: cat.color }]}
                     onPress={() => setSelectedSubId(sub.id)}
                   >
                     <MaterialCommunityIcons name={sub.icon as any} size={16} color={active ? '#fff' : cat.color} />
-                    <Text style={[styles.subChipLabel, { color: active ? '#fff' : palette.textPrimary }]}>
+                    <Text style={[styles.subChipLabel, { color: active ? '#fff' : colors.textPrimary }]}>
                       {sub.name}
                     </Text>
                   </TouchableOpacity>
@@ -157,12 +162,12 @@ export default function NewRecurringScreen() {
         ))}
 
         {/* Note */}
-        <Text variant="labelLarge" style={[styles.label, { marginTop: 16 }]}>Note (optionnel)</Text>
+        <Text variant="labelLarge" style={[styles.label, { color: colors.textSecondary, marginTop: 16 }]}>Note (optionnel)</Text>
         <TextInput
           value={note}
           onChangeText={setNote}
           placeholder="Ex: Loyer mensuel..."
-          style={styles.input}
+          style={[styles.input, { backgroundColor: colors.inputBg }]}
           multiline
           numberOfLines={2}
         />

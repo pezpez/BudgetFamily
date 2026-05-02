@@ -1,11 +1,12 @@
 import { View, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { Text, Surface } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { router } from 'expo-router';
 
 import { palette } from '../constants/theme';
+import { useAppTheme } from '../hooks/useAppTheme';
 import { useCurrency } from '../hooks/useCurrency';
 import { useTransactionStore } from '../store/useTransactionStore';
 
@@ -24,6 +25,7 @@ interface Props {
 export function TransactionItem(props: Props) {
   const { deleteTransaction } = useTransactionStore();
   const { format: fmt } = useCurrency();
+  const { colors } = useAppTheme();
   const isExpense = props.type === 'expense';
   const amountColor = isExpense ? palette.danger : palette.accent;
   const sign = isExpense ? '-' : '+';
@@ -45,8 +47,8 @@ export function TransactionItem(props: Props) {
       onLongPress={confirmDelete}
       activeOpacity={0.7}
     >
-      <Surface style={styles.container} elevation={0}>
-        <View style={[styles.iconWrap, { backgroundColor: props.categoryColor + '22' }]}>
+      <View style={[styles.container, { backgroundColor: colors.surface }]}>
+        <View style={[styles.iconWrap, { backgroundColor: props.categoryColor + '20' }]}>
           <MaterialCommunityIcons
             name={props.subcategoryIcon as any}
             size={22}
@@ -54,21 +56,27 @@ export function TransactionItem(props: Props) {
           />
         </View>
         <View style={styles.info}>
-          <Text variant="bodyMedium" style={styles.subName}>{props.subcategoryName}</Text>
-          <Text variant="labelSmall" style={styles.catName}>{props.categoryName}</Text>
+          <Text variant="bodyMedium" style={[styles.subName, { color: colors.textPrimary }]}>
+            {props.subcategoryName}
+          </Text>
+          <Text variant="labelSmall" style={[styles.catName, { color: colors.textSecondary }]}>
+            {props.categoryName}
+          </Text>
           {props.note ? (
-            <Text variant="labelSmall" style={styles.note} numberOfLines={1}>{props.note}</Text>
+            <Text variant="labelSmall" style={[styles.note, { color: colors.textSecondary }]} numberOfLines={1}>
+              {props.note}
+            </Text>
           ) : null}
         </View>
         <View style={styles.right}>
           <Text style={[styles.amount, { color: amountColor }]}>
             {sign}{fmt(props.amount)}
           </Text>
-          <Text variant="labelSmall" style={styles.date}>
+          <Text variant="labelSmall" style={[styles.date, { color: colors.textSecondary }]}>
             {format(props.date, 'd MMM', { locale: fr })}
           </Text>
         </View>
-      </Surface>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -77,14 +85,14 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     paddingHorizontal: 16, paddingVertical: 12,
-    backgroundColor: '#fff', borderRadius: 14, marginBottom: 8,
+    borderRadius: 14, marginBottom: 8,
   },
   iconWrap: { width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   info: { flex: 1 },
-  subName: { color: palette.textPrimary, fontWeight: '600' },
-  catName: { color: palette.textSecondary, marginTop: 1 },
-  note: { color: palette.textSecondary, fontStyle: 'italic', marginTop: 1 },
+  subName: { fontWeight: '600' },
+  catName: { marginTop: 1 },
+  note: { fontStyle: 'italic', marginTop: 1 },
   right: { alignItems: 'flex-end' },
   amount: { fontSize: 16, fontWeight: '700' },
-  date: { color: palette.textSecondary, marginTop: 2 },
+  date: { marginTop: 2 },
 });
