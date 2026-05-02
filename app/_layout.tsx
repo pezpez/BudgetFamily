@@ -1,24 +1,22 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
+import { PaperProvider } from 'react-native-paper';
+import { useColorScheme } from 'react-native';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { lightTheme, darkTheme } from '../constants/theme';
+import { runMigrations } from '../db/migrations';
+import { seedDefaultCategories } from '../db/seed';
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+export { ErrorBoundary } from 'expo-router';
 
 export const unstable_settings = {
-  // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: '(tabs)',
 };
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -26,34 +24,42 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
   });
+  const [dbReady, setDbReady] = useState(false);
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
+    async function initDb() {
+      await runMigrations();
+      await seedDefaultCategories();
+      setDbReady(true);
+    }
+    initDb();
+  }, []);
+
+  useEffect(() => {
+    if (loaded && dbReady) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, dbReady]);
 
-  if (!loaded) {
-    return null;
-  }
+  if (!loaded || !dbReady) return null;
 
   return <RootLayoutNav />;
 }
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <PaperProvider theme={theme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
-    </ThemeProvider>
+    </PaperProvider>
   );
 }
