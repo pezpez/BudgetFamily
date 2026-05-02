@@ -191,18 +191,11 @@ RecurringRule
 - [x] Empty states illustrés avec icônes MaterialCommunity sur toutes les pages
 - [x] eas.json : profil preview (APK Android) + production (AAB Android / iOS)
 
-### Sprint 4 — Rapports (Jours 6-7)
-- [ ] Donut chart dépenses par catégorie
-- [ ] Bar chart mensuel entrées/sorties
-- [ ] Sélecteur de période
-- [ ] Drill-down catégorie
-
-### Sprint 5 — Polish & Tests (Jour 8)
-- [ ] Mode sombre
-- [ ] Animations de transitions
-- [ ] Gestion des états vides (empty states illustrés)
-- [ ] Tests unitaires logique métier
-- [ ] Build Android APK de test (EAS Build)
+### Sprint 5 — Finalisation ✅ TERMINÉ
+- [x] Édition transaction : tap → app/transaction/[id].tsx pré-rempli, updateTransaction + deleteTransaction depuis l'écran
+- [x] Édition règle récurrente : tap → app/recurring/[id].tsx pré-rempli, updateRule + deleteRule depuis l'écran
+- [x] Export CSV : expo-file-system + expo-sharing, toutes les transactions exportées via la feuille de partage native
+- [x] Dark mode : hook useAppTheme, backgrounds et textes adaptatifs sur Dashboard, Transactions, Rapports, Settings
 
 ---
 

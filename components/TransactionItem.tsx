@@ -3,6 +3,7 @@ import { Text, Surface } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { router } from 'expo-router';
 
 import { palette } from '../constants/theme';
 import { formatCurrency } from '../utils/currency';
@@ -38,7 +39,11 @@ export function TransactionItem(props: Props) {
   }
 
   return (
-    <TouchableOpacity onLongPress={confirmDelete} activeOpacity={0.7}>
+    <TouchableOpacity
+      onPress={() => router.push(`/transaction/${props.id}`)}
+      onLongPress={confirmDelete}
+      activeOpacity={0.7}
+    >
       <Surface style={styles.container} elevation={0}>
         <View style={[styles.iconWrap, { backgroundColor: props.categoryColor + '22' }]}>
           <MaterialCommunityIcons

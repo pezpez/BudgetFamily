@@ -10,9 +10,11 @@ import { useTransactionStore } from '../../store/useTransactionStore';
 import { palette } from '../../constants/theme';
 import { formatCurrency } from '../../utils/currency';
 import { AnimatedBalance } from '../../components/AnimatedBalance';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 export default function DashboardScreen() {
   const { transactions, selectedMonth, loadTransactions } = useTransactionStore();
+  const { colors } = useAppTheme();
 
   useFocusEffect(
     useCallback(() => { loadTransactions(); }, [])
@@ -40,7 +42,7 @@ export default function DashboardScreen() {
   const progress = totalIncome > 0 ? Math.min(totalExpense / totalIncome, 1) : 0;
 
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
         {/* Month header */}
         <Text variant="labelLarge" style={styles.monthLabel}>

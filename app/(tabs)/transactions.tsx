@@ -8,9 +8,11 @@ import { useTransactionStore } from '../../store/useTransactionStore';
 import { TransactionItem } from '../../components/TransactionItem';
 import { MonthSelector } from '../../components/MonthSelector';
 import { palette } from '../../constants/theme';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 export default function TransactionsScreen() {
   const { transactions, isLoading, selectedMonth, setSelectedMonth, loadTransactions } = useTransactionStore();
+  const { colors } = useAppTheme();
   const [refreshing, setRefreshing] = useState(false);
 
   useFocusEffect(useCallback(() => { loadTransactions(); }, []));
@@ -23,7 +25,7 @@ export default function TransactionsScreen() {
 
   if (isLoading && !refreshing) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
         <MonthSelector value={selectedMonth} onChange={setSelectedMonth} />
         <View style={styles.center}>
           <ActivityIndicator size="large" color={palette.primary} />
@@ -33,7 +35,7 @@ export default function TransactionsScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <MonthSelector value={selectedMonth} onChange={setSelectedMonth} />
 
       {transactions.length === 0 ? (

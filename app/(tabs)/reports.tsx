@@ -8,6 +8,7 @@ import { useFocusEffect } from 'expo-router';
 import { fetchReportData, type Period, type ReportData } from '../../utils/reportData';
 import { palette } from '../../constants/theme';
 import { formatCurrency } from '../../utils/currency';
+import { useAppTheme } from '../../hooks/useAppTheme';
 
 const PERIOD_LABELS: { value: Period; label: string }[] = [
   { value: 'month', label: 'Mois' },
@@ -19,6 +20,7 @@ export default function ReportsScreen() {
   const [period, setPeriod] = useState<Period>('month');
   const [data, setData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(true);
+  const { colors } = useAppTheme();
 
   async function load(p: Period) {
     setLoading(true);
@@ -48,7 +50,7 @@ export default function ReportsScreen() {
   }
 
   return (
-    <ScrollView style={styles.root} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+    <ScrollView style={[styles.root, { backgroundColor: colors.background }]} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
       {/* Period selector */}
       <SegmentedButtons
         value={period}

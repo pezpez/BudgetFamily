@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 import { useRecurringStore } from '../../store/useRecurringStore';
+import { router } from 'expo-router';
 import { palette } from '../../constants/theme';
 import { formatCurrency } from '../../utils/currency';
 import { frequencyLabel, getNextOccurrence } from '../../utils/recurring';
@@ -54,6 +55,7 @@ export default function RecurringListScreen() {
             const sign = isExpense ? '-' : '+';
 
             return (
+              <TouchableOpacity onPress={() => router.push(`/recurring/${item.id}`)}>
               <Surface style={[styles.card, !item.isActive && styles.cardInactive]} elevation={1}>
                 <View style={styles.cardTop}>
                   <View style={[styles.iconWrap, { backgroundColor: item.categoryColor + '22' }]}>
@@ -106,6 +108,7 @@ export default function RecurringListScreen() {
                   />
                 </View>
               </Surface>
+              </TouchableOpacity>
             );
           }}
         />

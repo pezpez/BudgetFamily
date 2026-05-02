@@ -9,6 +9,8 @@ import { router } from 'expo-router';
 
 import { useCategoryStore } from '../../store/useCategoryStore';
 import { palette } from '../../constants/theme';
+import { useAppTheme } from '../../hooks/useAppTheme';
+import { exportTransactionsCSV } from '../../utils/exportData';
 
 const ICON_OPTIONS = [
   'cart', 'silverware-fork-knife', 'coffee', 'car', 'gas-station', 'bus',
@@ -24,6 +26,8 @@ const COLOR_OPTIONS = [
 
 export default function SettingsScreen() {
   const { categories, loadCategories, addCategory, deleteCategory, addSubcategory, deleteSubcategory } = useCategoryStore();
+  const { colors } = useAppTheme();
+  const [exporting, setExporting] = useState(false);
 
   // Add category dialog
   const [showAddCat, setShowAddCat] = useState(false);
@@ -80,8 +84,19 @@ export default function SettingsScreen() {
     );
   }
 
+  async function handleExport() {
+    setExporting(true);
+    try {
+      await exportTransactionsCSV();
+    } catch (e) {
+      Alert.alert('Erreur', "Impossible d'exporter les données.");
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.content}>
         {/* Recurring shortcut */}
         <TouchableOpacity style={styles.recurringLink} onPress={() => router.push('/recurring/index')}>
@@ -99,7 +114,31 @@ export default function SettingsScreen() {
 
         <Divider style={{ marginVertical: 8 }} />
 
-        <Text variant="titleMedium" style={styles.sectionTitle}>Catégories & Sous-catégories</Text>
+        {/* Export */}
+        <TouchableOpacity
+          style={[styles.recurringLink, { backgroundColor: colors.surface }]}
+          onPress={handleExport}
+          disabled={exporting}
+        >
+          <View style={styles.recurringLeft}>
+            <View style={[styles.recurringIcon, { backgroundColor: palette.success + '22' }]}>
+              <MaterialCommunityIcons name="download" size={22} color={palette.success} />
+            </View>
+            <View>
+              <Text variant="bodyMedium" style={[styles.recurringTitle, { color: colors.textPrimary }]}>
+                Exporter les données
+              </Text>
+              <Text variant="labelSmall" style={[styles.recurringSubtitle, { color: colors.textSecondary }]}>
+                {exporting ? 'Export en cours...' : 'Toutes les transactions en CSV'}
+              </Text>
+            </View>
+          </View>
+          <MaterialCommunityIcons name="chevron-right" size={22} color={colors.textSecondary} />
+        </TouchableOpacity>
+
+        <Divider style={{ marginVertical: 8 }} />
+
+        <Text variant="titleMedium" style={[styles.sectionTitle, { color: colors.textPrimary }]}>Catégories & Sous-catégories</Text>
         <Text variant="bodySmall" style={styles.hint}>Appuyez sur la corbeille pour supprimer</Text>
 
         {categories.map((cat) => (

@@ -18,7 +18,9 @@ interface TransactionStore {
   setSelectedMonth: (date: Date) => void;
   loadTransactions: () => Promise<void>;
   addTransaction: (tx: Omit<Transaction, 'id' | 'createdAt'>) => Promise<void>;
+  updateTransaction: (id: string, tx: Partial<Omit<Transaction, 'id' | 'createdAt'>>) => Promise<void>;
   deleteTransaction: (id: string) => Promise<void>;
+  getById: (id: string) => Promise<Transaction | null>;
 }
 
 export const useTransactionStore = create<TransactionStore>((set, get) => ({
@@ -73,8 +75,18 @@ export const useTransactionStore = create<TransactionStore>((set, get) => ({
     await get().loadTransactions();
   },
 
+  updateTransaction: async (id, tx) => {
+    await db.update(transactions).set(tx).where(eq(transactions.id, id));
+    await get().loadTransactions();
+  },
+
   deleteTransaction: async (id) => {
     await db.delete(transactions).where(eq(transactions.id, id));
     await get().loadTransactions();
+  },
+
+  getById: async (id) => {
+    const rows = await db.select().from(transactions).where(eq(transactions.id, id));
+    return rows[0] ?? null;
   },
 }));
