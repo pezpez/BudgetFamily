@@ -1,11 +1,10 @@
-import { db } from './client';
-import { sql } from 'drizzle-orm';
+import { sqliteDb } from './client';
 
 export async function runMigrations() {
-  await db.run(sql`PRAGMA journal_mode = WAL;`);
-  await db.run(sql`PRAGMA foreign_keys = ON;`);
+  await sqliteDb.execAsync('PRAGMA journal_mode = WAL;');
+  await sqliteDb.execAsync('PRAGMA foreign_keys = ON;');
 
-  await db.run(sql`
+  await sqliteDb.execAsync(`
     CREATE TABLE IF NOT EXISTS categories (
       id TEXT PRIMARY KEY,
       name TEXT NOT NULL,
@@ -15,7 +14,7 @@ export async function runMigrations() {
     )
   `);
 
-  await db.run(sql`
+  await sqliteDb.execAsync(`
     CREATE TABLE IF NOT EXISTS subcategories (
       id TEXT PRIMARY KEY,
       category_id TEXT NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
@@ -25,12 +24,13 @@ export async function runMigrations() {
       created_at INTEGER NOT NULL
     )
   `);
-  // Migration colonne monthly_budget (tables existantes)
-  await db.run(sql`
-    ALTER TABLE subcategories ADD COLUMN monthly_budget REAL
-  `).catch(() => {});  // ignore si déjà présente
 
-  await db.run(sql`
+  // Migration colonne monthly_budget (tables existantes)
+  await sqliteDb.execAsync(
+    'ALTER TABLE subcategories ADD COLUMN monthly_budget REAL'
+  ).catch(() => {});
+
+  await sqliteDb.execAsync(`
     CREATE TABLE IF NOT EXISTS recurring_rules (
       id TEXT PRIMARY KEY,
       subcategory_id TEXT NOT NULL REFERENCES subcategories(id),
@@ -47,7 +47,7 @@ export async function runMigrations() {
     )
   `);
 
-  await db.run(sql`
+  await sqliteDb.execAsync(`
     CREATE TABLE IF NOT EXISTS transactions (
       id TEXT PRIMARY KEY,
       subcategory_id TEXT NOT NULL REFERENCES subcategories(id),
