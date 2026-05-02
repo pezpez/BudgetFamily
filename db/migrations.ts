@@ -1,7 +1,6 @@
 import { sqliteDb } from './client';
 
 export async function runMigrations() {
-  await sqliteDb.execAsync('PRAGMA journal_mode = WAL;');
   await sqliteDb.execAsync('PRAGMA foreign_keys = ON;');
 
   await sqliteDb.execAsync(`
