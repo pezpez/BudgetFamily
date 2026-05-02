@@ -58,6 +58,16 @@ function RootLayoutNav() {
     <PaperProvider theme={theme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="transaction/new"
+          options={{
+            title: 'Nouvelle transaction',
+            presentation: 'modal',
+            headerStyle: { backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#FFFFFF' },
+            headerTitleStyle: { color: colorScheme === 'dark' ? '#FFFFFF' : '#1A1C2E', fontWeight: '700' },
+            headerShadowVisible: false,
+          }}
+        />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
       </Stack>
     </PaperProvider>
