@@ -7,17 +7,20 @@ import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
 import { useTransactionStore } from '../../store/useTransactionStore';
+import { useCategoryStore } from '../../store/useCategoryStore';
 import { palette } from '../../constants/theme';
-import { formatCurrency } from '../../utils/currency';
 import { AnimatedBalance } from '../../components/AnimatedBalance';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { useCurrency } from '../../hooks/useCurrency';
 
 export default function DashboardScreen() {
   const { transactions, selectedMonth, loadTransactions } = useTransactionStore();
+  const { categories, loadCategories } = useCategoryStore();
   const { colors } = useAppTheme();
+  const { format: fmt } = useCurrency();
 
   useFocusEffect(
-    useCallback(() => { loadTransactions(); }, [])
+    useCallback(() => { loadTransactions(); loadCategories(); }, [])
   );
 
   const totalIncome = transactions.filter((t) => t.type === 'income').reduce((s, t) => s + t.amount, 0);
@@ -41,6 +44,29 @@ export default function DashboardScreen() {
 
   const progress = totalIncome > 0 ? Math.min(totalExpense / totalIncome, 1) : 0;
 
+  // Budget progress per subcategory
+  const subTotals = transactions
+    .filter((t) => t.type === 'expense')
+    .reduce<Record<string, number>>((acc, t) => {
+      acc[t.subcategoryId] = (acc[t.subcategoryId] ?? 0) + t.amount;
+      return acc;
+    }, {});
+
+  const budgetItems = categories
+    .flatMap((cat) =>
+      cat.subcategories
+        .filter((s) => s.monthlyBudget != null && s.monthlyBudget > 0)
+        .map((s) => ({
+          id: s.id,
+          name: s.name,
+          icon: s.icon,
+          color: cat.color,
+          budget: s.monthlyBudget as number,
+          spent: subTotals[s.id] ?? 0,
+        }))
+    )
+    .sort((a, b) => b.spent / b.budget - a.spent / a.budget);
+
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <ScrollView style={styles.scroll} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -57,14 +83,14 @@ export default function DashboardScreen() {
             <View style={styles.incomeExpenseItem}>
               <MaterialCommunityIcons name="arrow-down-circle" size={18} color={palette.accent} />
               <Text variant="labelMedium" style={{ color: palette.accent, marginLeft: 4 }}>
-                {formatCurrency(totalIncome)}
+                {fmt(totalIncome)}
               </Text>
             </View>
             <View style={styles.separator} />
             <View style={styles.incomeExpenseItem}>
               <MaterialCommunityIcons name="arrow-up-circle" size={18} color={palette.danger} />
               <Text variant="labelMedium" style={{ color: palette.danger, marginLeft: 4 }}>
-                {formatCurrency(totalExpense)}
+                {fmt(totalExpense)}
               </Text>
             </View>
           </View>
@@ -77,6 +103,36 @@ export default function DashboardScreen() {
             </View>
           )}
         </Surface>
+
+        {/* Budget objectives */}
+        {budgetItems.length > 0 && (
+          <Surface style={styles.card} elevation={1}>
+            <Text variant="titleSmall" style={styles.cardTitle}>Objectifs du mois</Text>
+            {budgetItems.map((item) => {
+              const ratio = Math.min(item.spent / item.budget, 1);
+              const over = item.spent > item.budget;
+              const barColor = over ? palette.danger : ratio > 0.8 ? '#F59E0B' : palette.success;
+              return (
+                <View key={item.id} style={styles.budgetRow}>
+                  <View style={[styles.catIcon, { backgroundColor: item.color + '22' }]}>
+                    <MaterialCommunityIcons name={item.icon as any} size={16} color={item.color} />
+                  </View>
+                  <View style={styles.budgetInfo}>
+                    <View style={styles.budgetHeader}>
+                      <Text variant="bodySmall" style={styles.catName}>{item.name}</Text>
+                      <Text variant="labelSmall" style={{ color: over ? palette.danger : palette.textSecondary }}>
+                        {fmt(item.spent)} / {fmt(item.budget)}
+                      </Text>
+                    </View>
+                    <View style={styles.budgetBarBg}>
+                      <View style={[styles.budgetBar, { width: `${ratio * 100}%` as any, backgroundColor: barColor }]} />
+                    </View>
+                  </View>
+                </View>
+              );
+            })}
+          </Surface>
+        )}
 
         {/* Top categories */}
         <Surface style={styles.card} elevation={1}>
@@ -94,7 +150,7 @@ export default function DashboardScreen() {
                 </View>
                 <Text variant="bodyMedium" style={styles.catName}>{cat.name}</Text>
                 <Text variant="bodyMedium" style={[styles.catAmount, { color: palette.danger }]}>
-                  -{formatCurrency(cat.total)}
+                  -{fmt(cat.total)}
                 </Text>
               </View>
             ))
@@ -120,7 +176,7 @@ export default function DashboardScreen() {
                   variant="bodySmall"
                   style={{ color: tx.type === 'expense' ? palette.danger : palette.accent, fontWeight: '600' }}
                 >
-                  {tx.type === 'expense' ? '-' : '+'}{formatCurrency(tx.amount)}
+                  {tx.type === 'expense' ? '-' : '+'}{fmt(tx.amount)}
                 </Text>
               </View>
             ))
@@ -160,6 +216,11 @@ const styles = StyleSheet.create({
   catIcon: { width: 34, height: 34, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
   catName: { flex: 1, color: palette.textPrimary },
   catAmount: { fontWeight: '600' },
+  budgetRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 },
+  budgetInfo: { flex: 1 },
+  budgetHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
+  budgetBarBg: { height: 6, backgroundColor: '#E5E7EB', borderRadius: 3 },
+  budgetBar: { height: 6, borderRadius: 3 },
   fab: {
     position: 'absolute', right: 20, bottom: 24,
     backgroundColor: palette.primary, borderRadius: 16,

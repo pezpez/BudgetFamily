@@ -16,6 +16,7 @@ interface CategoryStore {
   deleteCategory: (id: string) => Promise<void>;
   addSubcategory: (sub: Omit<Subcategory, 'id' | 'createdAt'>) => Promise<void>;
   deleteSubcategory: (id: string) => Promise<void>;
+  setSubcategoryBudget: (id: string, budget: number | null) => Promise<void>;
 }
 
 export const useCategoryStore = create<CategoryStore>((set, get) => ({
@@ -54,6 +55,11 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
 
   deleteSubcategory: async (id) => {
     await db.delete(subcategories).where(eq(subcategories.id, id));
+    await get().loadCategories();
+  },
+
+  setSubcategoryBudget: async (id, budget) => {
+    await db.update(subcategories).set({ monthlyBudget: budget }).where(eq(subcategories.id, id));
     await get().loadCategories();
   },
 }));

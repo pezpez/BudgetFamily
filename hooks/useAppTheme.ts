@@ -9,14 +9,15 @@ export function useAppTheme() {
   return {
     isDark,
     colors: {
-      background: isDark ? '#111827' : '#F8F9FE',
-      surface: isDark ? '#1F2937' : '#FFFFFF',
-      surfaceVariant: isDark ? '#374151' : '#F3F4F6',
-      border: isDark ? '#374151' : '#E5E7EB',
-      inputBg: isDark ? '#1F2937' : '#F9FAFB',
-      textPrimary: isDark ? '#F9FAFB' : '#1A1C2E',
-      textSecondary: isDark ? '#9CA3AF' : '#6B7280',
-      primary: theme.colors.primary,
+      background:     isDark ? '#0F172A' : '#F0F2FA',
+      surface:        isDark ? '#1E293B' : '#FFFFFF',
+      surfaceVariant: isDark ? '#334155' : '#EEF0F8',
+      border:         isDark ? '#334155' : '#CBD5E1',
+      inputBg:        isDark ? '#1E293B' : '#F8FAFF',
+      // Textes — contraste WCAG AA garanti
+      textPrimary:    isDark ? '#F1F5F9' : '#111827',
+      textSecondary:  isDark ? '#CBD5E1' : '#374151',
+      primary:        theme.colors.primary,
     },
   };
 }

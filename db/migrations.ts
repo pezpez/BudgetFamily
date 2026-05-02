@@ -21,9 +21,14 @@ export async function runMigrations() {
       category_id TEXT NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
       name TEXT NOT NULL,
       icon TEXT NOT NULL DEFAULT 'tag',
+      monthly_budget REAL,
       created_at INTEGER NOT NULL
     )
   `);
+  // Migration colonne monthly_budget (tables existantes)
+  await db.run(sql`
+    ALTER TABLE subcategories ADD COLUMN monthly_budget REAL
+  `).catch(() => {});  // ignore si déjà présente
 
   await db.run(sql`
     CREATE TABLE IF NOT EXISTS recurring_rules (

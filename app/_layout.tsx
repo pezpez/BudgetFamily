@@ -11,6 +11,7 @@ import { lightTheme, darkTheme } from '../constants/theme';
 import { runMigrations } from '../db/migrations';
 import { seedDefaultCategories } from '../db/seed';
 import { generateRecurringTransactions } from '../utils/recurring';
+import { useSettingsStore } from '../store/useSettingsStore';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -26,6 +27,7 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
   const [dbReady, setDbReady] = useState(false);
+  const loadSettings = useSettingsStore((s) => s.loadSettings);
 
   useEffect(() => {
     if (error) throw error;
@@ -36,6 +38,7 @@ export default function RootLayout() {
       await runMigrations();
       await seedDefaultCategories();
       await generateRecurringTransactions();
+      await loadSettings();
       setDbReady(true);
     }
     initDb();

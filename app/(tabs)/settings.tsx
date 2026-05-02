@@ -8,8 +8,10 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 import { useCategoryStore } from '../../store/useCategoryStore';
+import { useSettingsStore, CURRENCIES } from '../../store/useSettingsStore';
 import { palette } from '../../constants/theme';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { useCurrency } from '../../hooks/useCurrency';
 import { exportTransactionsCSV } from '../../utils/exportData';
 
 const ICON_OPTIONS = [
@@ -25,9 +27,14 @@ const COLOR_OPTIONS = [
 ];
 
 export default function SettingsScreen() {
-  const { categories, loadCategories, addCategory, deleteCategory, addSubcategory, deleteSubcategory } = useCategoryStore();
+  const { categories, loadCategories, addCategory, deleteCategory, addSubcategory, deleteSubcategory, setSubcategoryBudget } = useCategoryStore();
+  const { setCurrency } = useSettingsStore();
   const { colors } = useAppTheme();
+  const { currencyCode, format: formatAmt } = useCurrency();
   const [exporting, setExporting] = useState(false);
+  const [showCurrencyPicker, setShowCurrencyPicker] = useState(false);
+  const [budgetSubId, setBudgetSubId] = useState<string | null>(null);
+  const [budgetInput, setBudgetInput] = useState('');
 
   // Add category dialog
   const [showAddCat, setShowAddCat] = useState(false);
@@ -84,6 +91,19 @@ export default function SettingsScreen() {
     );
   }
 
+  function openBudgetDialog(subId: string, currentBudget: number | null | undefined) {
+    setBudgetSubId(subId);
+    setBudgetInput(currentBudget ? currentBudget.toString() : '');
+  }
+
+  async function handleSaveBudget() {
+    if (!budgetSubId) return;
+    const val = parseFloat(budgetInput.replace(',', '.'));
+    await setSubcategoryBudget(budgetSubId, isNaN(val) || val <= 0 ? null : val);
+    setBudgetSubId(null);
+    setBudgetInput('');
+  }
+
   async function handleExport() {
     setExporting(true);
     try {
@@ -98,6 +118,29 @@ export default function SettingsScreen() {
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.content}>
+        {/* Currency */}
+        <TouchableOpacity
+          style={[styles.recurringLink, { backgroundColor: colors.surface }]}
+          onPress={() => setShowCurrencyPicker(true)}
+        >
+          <View style={styles.recurringLeft}>
+            <View style={[styles.recurringIcon, { backgroundColor: palette.primary + '22' }]}>
+              <MaterialCommunityIcons name="cash" size={22} color={palette.primary} />
+            </View>
+            <View>
+              <Text variant="bodyMedium" style={[styles.recurringTitle, { color: colors.textPrimary }]}>
+                Devise
+              </Text>
+              <Text variant="labelSmall" style={[styles.recurringSubtitle, { color: colors.textSecondary }]}>
+                {CURRENCIES.find((c) => c.code === currencyCode)?.label ?? currencyCode}
+              </Text>
+            </View>
+          </View>
+          <MaterialCommunityIcons name="chevron-right" size={22} color={colors.textSecondary} />
+        </TouchableOpacity>
+
+        <Divider style={{ marginVertical: 8 }} />
+
         {/* Recurring shortcut */}
         <TouchableOpacity style={styles.recurringLink} onPress={() => router.push('/recurring/index')}>
           <View style={styles.recurringLeft}>
@@ -160,11 +203,22 @@ export default function SettingsScreen() {
               {cat.subcategories.map((sub) => (
                 <View key={sub.id} style={styles.subRow}>
                   <MaterialCommunityIcons name={sub.icon as any} size={16} color={cat.color} style={styles.subIcon} />
-                  <Text variant="bodyMedium" style={styles.subName}>{sub.name}</Text>
+                  <Text variant="bodyMedium" style={[styles.subName, { color: colors.textPrimary }]}>{sub.name}</Text>
+                  <TouchableOpacity
+                    style={[styles.budgetChip, { borderColor: sub.monthlyBudget ? cat.color : colors.border }]}
+                    onPress={() => openBudgetDialog(sub.id, sub.monthlyBudget)}
+                  >
+                    <MaterialCommunityIcons name="target" size={12}
+                      color={sub.monthlyBudget ? cat.color : colors.textSecondary} />
+                    <Text style={[styles.budgetChipText,
+                      { color: sub.monthlyBudget ? cat.color : colors.textSecondary }]}>
+                      {sub.monthlyBudget ? formatAmt(sub.monthlyBudget) : 'Objectif'}
+                    </Text>
+                  </TouchableOpacity>
                   <IconButton
                     icon="close"
                     size={14}
-                    iconColor={palette.textSecondary}
+                    iconColor={palette.danger}
                     onPress={() => confirmDeleteSub(sub.id, sub.name)}
                   />
                 </View>
@@ -193,6 +247,47 @@ export default function SettingsScreen() {
       />
 
       <Portal>
+        {/* Currency Picker */}
+        <Dialog visible={showCurrencyPicker} onDismiss={() => setShowCurrencyPicker(false)} style={styles.dialog}>
+          <Dialog.Title>Choisir la devise</Dialog.Title>
+          <Dialog.Content>
+            {CURRENCIES.map((c) => (
+              <TouchableOpacity
+                key={c.code}
+                style={[styles.currencyRow, currencyCode === c.code && { backgroundColor: palette.primary + '18' }]}
+                onPress={async () => { await setCurrency(c.code); setShowCurrencyPicker(false); }}
+              >
+                <Text style={styles.currencySymbol}>{c.symbol}</Text>
+                <Text variant="bodyMedium" style={{ flex: 1 }}>{c.label}</Text>
+                {currencyCode === c.code &&
+                  <MaterialCommunityIcons name="check" size={18} color={palette.primary} />}
+              </TouchableOpacity>
+            ))}
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setShowCurrencyPicker(false)}>Fermer</Button>
+          </Dialog.Actions>
+        </Dialog>
+
+        {/* Budget Dialog */}
+        <Dialog visible={!!budgetSubId} onDismiss={() => setBudgetSubId(null)} style={styles.dialog}>
+          <Dialog.Title>Objectif mensuel</Dialog.Title>
+          <Dialog.Content>
+            <TextInput
+              label={`Montant objectif`}
+              value={budgetInput}
+              onChangeText={setBudgetInput}
+              keyboardType="decimal-pad"
+              style={styles.dialogInput}
+              placeholder="Laisser vide pour supprimer"
+            />
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setBudgetSubId(null)}>Annuler</Button>
+            <Button onPress={handleSaveBudget}>Enregistrer</Button>
+          </Dialog.Actions>
+        </Dialog>
+
         {/* Add Category Dialog */}
         <Dialog visible={showAddCat} onDismiss={() => setShowAddCat(false)} style={styles.dialog}>
           <Dialog.Title>Nouvelle catégorie</Dialog.Title>
@@ -295,8 +390,18 @@ const styles = StyleSheet.create({
     width: 40, height: 40, borderRadius: 12,
     backgroundColor: palette.primary + '22', alignItems: 'center', justifyContent: 'center',
   },
-  recurringTitle: { color: palette.textPrimary, fontWeight: '600' },
-  recurringSubtitle: { color: palette.textSecondary, marginTop: 1 },
+  recurringTitle: { fontWeight: '600' },
+  recurringSubtitle: { marginTop: 1 },
+  budgetChip: {
+    flexDirection: 'row', alignItems: 'center', gap: 3,
+    borderWidth: 1, borderRadius: 8, paddingHorizontal: 6, paddingVertical: 2,
+  },
+  budgetChipText: { fontSize: 11, fontWeight: '600' },
+  currencyRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 12,
+    paddingVertical: 12, paddingHorizontal: 8, borderRadius: 8, marginBottom: 2,
+  },
+  currencySymbol: { fontSize: 18, fontWeight: '700', width: 32, textAlign: 'center' },
   dialog: { borderRadius: 20 },
   dialogInput: { marginBottom: 12, backgroundColor: 'transparent' },
   pickerLabel: { color: palette.textSecondary, marginBottom: 6, marginTop: 4 },

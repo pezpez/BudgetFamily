@@ -9,6 +9,7 @@ import { fr } from 'date-fns/locale';
 
 import { useCategoryStore } from '../../store/useCategoryStore';
 import { useRecurringStore } from '../../store/useRecurringStore';
+import { useCurrency } from '../../hooks/useCurrency';
 import { palette } from '../../constants/theme';
 
 type TxType = 'expense' | 'income';
@@ -20,6 +21,7 @@ export default function EditRecurringScreen() {
   const navigation = useNavigation();
   const { categories, loadCategories } = useCategoryStore();
   const { getById, updateRule, deleteRule } = useRecurringStore();
+  const { symbol } = useCurrency();
 
   const [loaded, setLoaded] = useState(false);
   const [type, setType] = useState<TxType>('expense');
@@ -125,7 +127,7 @@ export default function EditRecurringScreen() {
           value={amount}
           onChangeText={setAmount}
           keyboardType="decimal-pad"
-          label="Montant (€)"
+          label={`Montant (${symbol})`}
           style={styles.input}
           textColor={typeColor}
         />

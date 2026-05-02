@@ -197,6 +197,14 @@ RecurringRule
 - [x] Export CSV : expo-file-system + expo-sharing, toutes les transactions exportées via la feuille de partage native
 - [x] Dark mode : hook useAppTheme, backgrounds et textes adaptatifs sur Dashboard, Transactions, Rapports, Settings
 
+### Sprint 6 — Objectifs budget, devise & contraste ✅ TERMINÉ
+- [x] Objectifs mensuels par sous-catégorie : colonne monthly_budget en DB, migration ALTER TABLE, setSubcategoryBudget() dans store
+- [x] UI objectifs dans Settings : chip budget sur chaque sous-catégorie, dialog de saisie du montant cible
+- [x] Progress bars objectifs dans Dashboard : section "Objectifs du mois", barre colorée (vert/orange/rouge selon ratio)
+- [x] Sélection de devise : useSettingsStore (AsyncStorage), 6 devises (USD/EUR/GBP/CAD/CHF/JPY), default USD
+- [x] Hook useCurrency : format() partout — Dashboard, Transactions, Reports, AnimatedBalance, TransactionItem, Récurrences
+- [x] Contrastes WCAG AA : textSecondary #374151, danger #D32F2F, success #388E3C, accent #00ACC1
+
 ---
 
 ## Commandes utiles

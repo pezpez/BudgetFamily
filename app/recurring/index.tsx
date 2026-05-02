@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from 'react';
-import { View, FlatList, StyleSheet, Alert } from 'react-native';
+import { View, FlatList, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { Text, FAB, Surface, Switch, IconButton, Divider, ActivityIndicator } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router, useFocusEffect } from 'expo-router';
@@ -8,11 +8,12 @@ import { fr } from 'date-fns/locale';
 
 import { useRecurringStore } from '../../store/useRecurringStore';
 import { palette } from '../../constants/theme';
-import { formatCurrency } from '../../utils/currency';
+import { useCurrency } from '../../hooks/useCurrency';
 import { frequencyLabel, getNextOccurrence } from '../../utils/recurring';
 
 export default function RecurringListScreen() {
   const { rules, isLoading, loadRules, toggleRule, deleteRule } = useRecurringStore();
+  const { format: fmt } = useCurrency();
 
   useFocusEffect(useCallback(() => { loadRules(); }, []));
 
@@ -80,7 +81,7 @@ export default function RecurringListScreen() {
                   </View>
                   <View style={styles.right}>
                     <Text style={[styles.amount, { color: amountColor }]}>
-                      {sign}{formatCurrency(item.amount)}
+                      {sign}{fmt(item.amount)}
                     </Text>
                     <Switch
                       value={item.isActive}

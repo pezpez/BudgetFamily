@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Text, StyleSheet } from 'react-native';
-import { formatCurrency } from '../utils/currency';
+import { useCurrency } from '../hooks/useCurrency';
 
 interface Props {
   value: number;
@@ -9,6 +9,7 @@ interface Props {
 }
 
 export function AnimatedBalance({ value, color, style }: Props) {
+  const { format: fmt } = useCurrency();
   const [displayed, setDisplayed] = useState(value);
   const frameRef = useRef<number | null>(null);
   const startRef = useRef<number | null>(null);
@@ -45,7 +46,7 @@ export function AnimatedBalance({ value, color, style }: Props) {
 
   return (
     <Text style={[styles.amount, { color }, style]}>
-      {sign}{formatCurrency(displayed)}
+      {sign}{fmt(displayed)}
     </Text>
   );
 }

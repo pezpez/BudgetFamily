@@ -7,8 +7,8 @@ import { useFocusEffect } from 'expo-router';
 
 import { fetchReportData, type Period, type ReportData } from '../../utils/reportData';
 import { palette } from '../../constants/theme';
-import { formatCurrency } from '../../utils/currency';
 import { useAppTheme } from '../../hooks/useAppTheme';
+import { useCurrency } from '../../hooks/useCurrency';
 
 const PERIOD_LABELS: { value: Period; label: string }[] = [
   { value: 'month', label: 'Mois' },
@@ -21,6 +21,7 @@ export default function ReportsScreen() {
   const [data, setData] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(true);
   const { colors } = useAppTheme();
+  const { format: fmt } = useCurrency();
 
   async function load(p: Period) {
     setLoading(true);
@@ -71,14 +72,14 @@ export default function ReportsScreen() {
               <MaterialCommunityIcons name="arrow-down-circle" size={20} color={palette.accent} />
               <Text variant="labelSmall" style={styles.summaryLabel}>Entrées</Text>
               <Text style={[styles.summaryAmount, { color: palette.accent }]}>
-                {formatCurrency(data.totalIncome)}
+                {fmt(data.totalIncome)}
               </Text>
             </Surface>
             <Surface style={[styles.summaryCard, { flex: 1 }]} elevation={1}>
               <MaterialCommunityIcons name="arrow-up-circle" size={20} color={palette.danger} />
               <Text variant="labelSmall" style={styles.summaryLabel}>Dépenses</Text>
               <Text style={[styles.summaryAmount, { color: palette.danger }]}>
-                {formatCurrency(data.totalExpense)}
+                {fmt(data.totalExpense)}
               </Text>
             </Surface>
             <Surface style={[styles.summaryCard, { flex: 1 }]} elevation={1}>
@@ -89,7 +90,7 @@ export default function ReportsScreen() {
               />
               <Text variant="labelSmall" style={styles.summaryLabel}>Solde</Text>
               <Text style={[styles.summaryAmount, { color: data.balance >= 0 ? palette.success : palette.danger }]}>
-                {data.balance >= 0 ? '+' : ''}{formatCurrency(data.balance)}
+                {data.balance >= 0 ? '+' : ''}{fmt(data.balance)}
               </Text>
             </Surface>
           </View>
@@ -112,7 +113,7 @@ export default function ReportsScreen() {
                     innerRadius={72}
                     centerLabelComponent={() => (
                       <View style={styles.donutCenter}>
-                        <Text style={styles.donutCenterAmount}>{formatCurrency(data.totalExpense)}</Text>
+                        <Text style={styles.donutCenterAmount}>{fmt(data.totalExpense)}</Text>
                         <Text style={styles.donutCenterLabel}>total</Text>
                       </View>
                     )}
@@ -132,7 +133,7 @@ export default function ReportsScreen() {
                       </View>
                       <Text variant="bodySmall" style={styles.legendName}>{s.name}</Text>
                       <Text variant="bodySmall" style={[styles.legendAmount, { color: s.color }]}>
-                        {formatCurrency(s.total)}
+                        {fmt(s.total)}
                       </Text>
                       <Text variant="labelSmall" style={styles.legendPct}>
                         {Math.round(s.percentage)}%
@@ -204,7 +205,7 @@ export default function ReportsScreen() {
                     <Text variant="bodyMedium" style={styles.tableName}>{s.name}</Text>
                     <View style={styles.tableRight}>
                       <Text style={[styles.tableAmount, { color: palette.danger }]}>
-                        {formatCurrency(s.total)}
+                        {fmt(s.total)}
                       </Text>
                       <View style={styles.tableBarWrap}>
                         <View style={[styles.tableBar, { width: `${s.percentage}%` as any, backgroundColor: s.color }]} />

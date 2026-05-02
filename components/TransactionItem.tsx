@@ -6,7 +6,7 @@ import { fr } from 'date-fns/locale';
 import { router } from 'expo-router';
 
 import { palette } from '../constants/theme';
-import { formatCurrency } from '../utils/currency';
+import { useCurrency } from '../hooks/useCurrency';
 import { useTransactionStore } from '../store/useTransactionStore';
 
 interface Props {
@@ -23,6 +23,7 @@ interface Props {
 
 export function TransactionItem(props: Props) {
   const { deleteTransaction } = useTransactionStore();
+  const { format: fmt } = useCurrency();
   const isExpense = props.type === 'expense';
   const amountColor = isExpense ? palette.danger : palette.accent;
   const sign = isExpense ? '-' : '+';
@@ -30,7 +31,7 @@ export function TransactionItem(props: Props) {
   function confirmDelete() {
     Alert.alert(
       'Supprimer',
-      `Supprimer cette transaction de ${formatCurrency(props.amount)} ?`,
+      `Supprimer cette transaction de ${fmt(props.amount)} ?`,
       [
         { text: 'Annuler', style: 'cancel' },
         { text: 'Supprimer', style: 'destructive', onPress: () => deleteTransaction(props.id) },
@@ -61,7 +62,7 @@ export function TransactionItem(props: Props) {
         </View>
         <View style={styles.right}>
           <Text style={[styles.amount, { color: amountColor }]}>
-            {sign}{formatCurrency(props.amount)}
+            {sign}{fmt(props.amount)}
           </Text>
           <Text variant="labelSmall" style={styles.date}>
             {format(props.date, 'd MMM', { locale: fr })}

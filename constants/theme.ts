@@ -1,16 +1,16 @@
 import { MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
 
 const palette = {
-  primary: '#5C6BC0',
+  primary: '#4F5DB5',       // Indigo légèrement plus foncé pour meilleur contraste
   primaryDark: '#3949AB',
-  accent: '#26C6DA',
-  danger: '#EF5350',
-  success: '#66BB6A',
-  warning: '#FFA726',
-  backgroundLight: '#F8F9FE',
+  accent: '#00ACC1',        // Cyan plus foncé (était #26C6DA)
+  danger: '#D32F2F',        // Rouge plus foncé (était #EF5350)
+  success: '#388E3C',       // Vert plus foncé (était #66BB6A)
+  warning: '#F57C00',       // Orange plus foncé (était #FFA726)
+  backgroundLight: '#F0F2FA',
   surface: '#FFFFFF',
-  textPrimary: '#1A1C2E',
-  textSecondary: '#6B7280',
+  textPrimary: '#111827',   // Quasi noir
+  textSecondary: '#374151', // Gris foncé (était #6B7280 trop clair)
 };
 
 export const lightTheme = {
@@ -31,9 +31,13 @@ export const darkTheme = {
   ...MD3DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
-    primary: '#7986CB',
-    secondary: palette.accent,
-    error: palette.danger,
+    primary: '#8C9EFF',      // Indigo clair sur fond sombre
+    secondary: '#4DD0E1',
+    error: '#EF9A9A',
+    background: '#0F172A',
+    surface: '#1E293B',
+    onSurface: '#F1F5F9',
+    onSurfaceVariant: '#CBD5E1',
   },
 };
 

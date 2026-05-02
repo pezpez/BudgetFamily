@@ -13,6 +13,7 @@ export const subcategories = sqliteTable('subcategories', {
   categoryId: text('category_id').notNull().references(() => categories.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   icon: text('icon').notNull().default('tag'),
+  monthlyBudget: real('monthly_budget'),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull(),
 });
 
