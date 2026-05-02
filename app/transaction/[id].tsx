@@ -14,9 +14,7 @@ export default function EditTransactionScreen() {
   const { getById, updateTransaction, deleteTransaction } = useTransactionStore();
   const [tx, setTx] = useState<Transaction | null>(null);
 
-  useEffect(() => {
-    getById(id).then(setTx);
-  }, [id]);
+  useEffect(() => { getById(id).then(setTx); }, [id]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -50,8 +48,17 @@ export default function EditTransactionScreen() {
       initialDate={tx.date}
       initialNote={tx.note ?? ''}
       submitLabel="Enregistrer les modifications"
+      showRecurring={false}
       onSubmit={async (data) => {
-        await updateTransaction(id, data);
+        await updateTransaction(id, {
+          subcategoryId:   data.subcategoryId,
+          amount:          data.amount,
+          type:            data.type,
+          date:            data.date,
+          note:            data.note,
+          isRecurring:     tx.isRecurring,
+          recurringRuleId: tx.recurringRuleId,
+        });
         router.back();
       }}
     />

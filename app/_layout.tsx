@@ -5,9 +5,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import { PaperProvider } from 'react-native-paper';
-import { useColorScheme } from 'react-native';
 
-import { lightTheme, darkTheme } from '../constants/theme';
+import { lightTheme } from '../constants/theme';
 import { runMigrations } from '../db/migrations';
 import { seedDefaultCategories } from '../db/seed';
 import { generateRecurringTransactions } from '../utils/recurring';
@@ -20,6 +19,11 @@ export const unstable_settings = {
 };
 
 SplashScreen.preventAutoHideAsync();
+
+const HEADER = {
+  backgroundColor: '#FFFFFF',
+  titleColor:      '#1A2332',
+};
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -45,41 +49,30 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (loaded && dbReady) {
-      SplashScreen.hideAsync();
-    }
+    if (loaded && dbReady) SplashScreen.hideAsync();
   }, [loaded, dbReady]);
 
   if (!loaded || !dbReady) return null;
 
-  return <RootLayoutNav />;
-}
-
-function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-  const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
-
   return (
-    <PaperProvider theme={theme}>
+    <PaperProvider theme={lightTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="transaction/[id]"
           options={{
-            title: 'Modifier la transaction',
-            presentation: 'modal',
-            headerStyle: { backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#FFFFFF' },
-            headerTitleStyle: { color: colorScheme === 'dark' ? '#FFFFFF' : '#1A1C2E', fontWeight: '700' },
+            title: 'Modifier la transaction', presentation: 'modal',
+            headerStyle: { backgroundColor: HEADER.backgroundColor },
+            headerTitleStyle: { color: HEADER.titleColor, fontWeight: '700' },
             headerShadowVisible: false,
           }}
         />
         <Stack.Screen
           name="transaction/new"
           options={{
-            title: 'Nouvelle transaction',
-            presentation: 'modal',
-            headerStyle: { backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#FFFFFF' },
-            headerTitleStyle: { color: colorScheme === 'dark' ? '#FFFFFF' : '#1A1C2E', fontWeight: '700' },
+            title: 'Nouvelle transaction', presentation: 'modal',
+            headerStyle: { backgroundColor: HEADER.backgroundColor },
+            headerTitleStyle: { color: HEADER.titleColor, fontWeight: '700' },
             headerShadowVisible: false,
           }}
         />
@@ -87,28 +80,26 @@ function RootLayoutNav() {
           name="recurring/index"
           options={{
             title: 'Récurrences',
-            headerStyle: { backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#FFFFFF' },
-            headerTitleStyle: { color: colorScheme === 'dark' ? '#FFFFFF' : '#1A1C2E', fontWeight: '700' },
+            headerStyle: { backgroundColor: HEADER.backgroundColor },
+            headerTitleStyle: { color: HEADER.titleColor, fontWeight: '700' },
             headerShadowVisible: false,
           }}
         />
         <Stack.Screen
           name="recurring/[id]"
           options={{
-            title: 'Modifier la récurrence',
-            presentation: 'modal',
-            headerStyle: { backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#FFFFFF' },
-            headerTitleStyle: { color: colorScheme === 'dark' ? '#FFFFFF' : '#1A1C2E', fontWeight: '700' },
+            title: 'Modifier la récurrence', presentation: 'modal',
+            headerStyle: { backgroundColor: HEADER.backgroundColor },
+            headerTitleStyle: { color: HEADER.titleColor, fontWeight: '700' },
             headerShadowVisible: false,
           }}
         />
         <Stack.Screen
           name="recurring/new"
           options={{
-            title: 'Nouvelle récurrence',
-            presentation: 'modal',
-            headerStyle: { backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#FFFFFF' },
-            headerTitleStyle: { color: colorScheme === 'dark' ? '#FFFFFF' : '#1A1C2E', fontWeight: '700' },
+            title: 'Nouvelle récurrence', presentation: 'modal',
+            headerStyle: { backgroundColor: HEADER.backgroundColor },
+            headerTitleStyle: { color: HEADER.titleColor, fontWeight: '700' },
             headerShadowVisible: false,
           }}
         />

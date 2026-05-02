@@ -1,54 +1,40 @@
-import { MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
+import { MD3LightTheme } from 'react-native-paper';
 
 /**
- * Palette douce — teintes indigo/lavande harmonieuses, contrastes WCAG AA ≥ 4.5:1
+ * Palette "Ciel d'été" — bleue et reposante, toujours en mode clair
  *
- * primary    #6366F1  Indigo 500      4.5:1 sur blanc ✓
- * accent     #0E7490  Cyan 700        5.4:1 sur blanc ✓  (entrées)
- * danger     #E11D48  Rose 600        4.7:1 sur blanc ✓  (dépenses)
- * success    #047857  Emerald 700     5.5:1 sur blanc ✓
- * warning    #B45309  Amber 700       5.7:1 sur blanc ✓
- * textSec    #4C4975  Indigo-gray     8.0:1 sur blanc ✓
+ * primary    #3674B5  Bleu cornflower   4.9:1 ✓
+ * accent     #0E7C99  Teal bleu         4.8:1 ✓  (revenus)
+ * danger     #C0392B  Rouge brique      5.4:1 ✓  (dépenses)
+ * success    #1E7A50  Vert forêt        5.4:1 ✓  (solde +)
+ * textSec    #4E6278  Gris-bleu         5.8:1 ✓
  */
-const palette = {
-  primary:         '#6366F1',
-  primaryDark:     '#4F46E5',
-  accent:          '#0E7490',
-  danger:          '#E11D48',
-  success:         '#047857',
-  warning:         '#B45309',
-  backgroundLight: '#F5F3FF',
+export const palette = {
+  primary:         '#3674B5',
+  primaryDark:     '#245A94',
+  accent:          '#0E7C99',
+  danger:          '#C0392B',
+  success:         '#1E7A50',
+  warning:         '#B5651D',
+  backgroundLight: '#F4F7FB',
   surface:         '#FFFFFF',
-  textPrimary:     '#1E1B4B',
-  textSecondary:   '#4C4975',
+  textPrimary:     '#1A2332',
+  textSecondary:   '#4E6278',
 };
 
 export const lightTheme = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary:             palette.primary,
-    secondary:           palette.accent,
-    error:               palette.danger,
-    background:          palette.backgroundLight,
-    surface:             palette.surface,
-    onSurface:           palette.textPrimary,
-    onSurfaceVariant:    palette.textSecondary,
+    primary:          palette.primary,
+    secondary:        palette.accent,
+    error:            palette.danger,
+    background:       palette.backgroundLight,
+    surface:          palette.surface,
+    onSurface:        palette.textPrimary,
+    onSurfaceVariant: palette.textSecondary,
   },
 };
 
-export const darkTheme = {
-  ...MD3DarkTheme,
-  colors: {
-    ...MD3DarkTheme.colors,
-    primary:             '#818CF8',  // Indigo 400 — lisible sur fond sombre
-    secondary:           '#22D3EE',  // Cyan 400
-    error:               '#FB7185',  // Rose 400
-    background:          '#13111F',  // Indigo quasi-noir
-    surface:             '#1E1B35',  // Indigo sombre
-    onSurface:           '#EDE9FE',  // Lavande claire
-    onSurfaceVariant:    '#A5B4FC',  // Indigo 300
-  },
-};
-
-export { palette };
+// Alias — always use lightTheme
+export const darkTheme = lightTheme;
