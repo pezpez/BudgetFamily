@@ -151,34 +151,29 @@ RecurringRule
 
 ## Plan de développement (Sprints)
 
-### Sprint 0 — Setup (Jour 1)
-- [ ] `npx create-expo-app BudgetFamily --template expo-template-blank-typescript`
-- [ ] Installer toutes les dépendances
-- [ ] Configurer Expo Router (tabs + stack)
-- [ ] Configurer Drizzle ORM + expo-sqlite
-- [ ] Créer les migrations DB (schema complet)
-- [ ] Seeder catégories par défaut
-- [ ] Configurer React Native Paper + thème couleurs
-- [ ] Structure des dossiers `app/`, `db/`, `store/`, `components/`
+### Sprint 0 — Setup ✅ TERMINÉ
+- [x] Projet Expo SDK 54, TypeScript, Expo Router (tabs template)
+- [x] Dépendances : Zustand, Drizzle ORM, expo-sqlite, React Native Paper, date-fns
+- [x] Schema SQLite : Category, Subcategory, Transaction, RecurringRule
+- [x] Migrations manuelles + seeder 6 catégories / 18 sous-catégories
+- [x] Thème Material 3 avec palette design system
+- [x] Structure `app/`, `db/`, `store/`, `components/`, `utils/`
 
-### Sprint 1 — Saisie & Catégories (Jours 2-3)
-- [ ] Écran gestion catégories (CRUD)
-- [ ] Écran gestion sous-catégories (CRUD)
-- [ ] Modal saisie transaction (flow complet)
-- [ ] Store Zustand transactions + catégories
-- [ ] Écran liste transactions
+### Sprint 1 — Saisie & Catégories ✅ TERMINÉ
+- [x] Formulaire transaction : toggle dépense/entrée, montant, picker sous-catégorie, date, note
+- [x] Écran transactions : liste mensuelle, MonthSelector, suppression par appui long
+- [x] Dashboard : solde, barre progression, top 3 catégories, dernières transactions, FAB
+- [x] Settings : CRUD catégories (icône + couleur) et sous-catégories via dialogs Paper
+- [x] Composants : TransactionItem, MonthSelector
+- [x] Stores Zustand : useTransactionStore, useCategoryStore
 
-### Sprint 2 — Dashboard (Jour 4)
-- [ ] Calcul solde mensuel
-- [ ] Composant barre progression budget
-- [ ] Top catégories dépenses
-- [ ] Prochaines récurrences
-- [ ] FAB navigation vers saisie
-
-### Sprint 3 — Récurrences (Jour 5)
-- [ ] Écran liste règles récurrentes
-- [ ] Logique génération transactions au boot
-- [ ] Toggle actif/inactif
+### Sprint 2 — Récurrences (en cours)
+- [ ] Store useRecurringStore (CRUD règles)
+- [ ] Écran liste règles récurrentes avec prochaine occurrence
+- [ ] Formulaire nouvelle règle (sous-catégorie, montant, fréquence, date début)
+- [ ] Logique génération automatique des transactions au démarrage de l'app
+- [ ] Toggle actif/inactif sans suppression
+- [ ] Lien depuis Settings + stack screens dans root layout
 
 ### Sprint 4 — Rapports (Jours 6-7)
 - [ ] Donut chart dépenses par catégorie

@@ -10,6 +10,7 @@ import { useColorScheme } from 'react-native';
 import { lightTheme, darkTheme } from '../constants/theme';
 import { runMigrations } from '../db/migrations';
 import { seedDefaultCategories } from '../db/seed';
+import { generateRecurringTransactions } from '../utils/recurring';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -34,6 +35,7 @@ export default function RootLayout() {
     async function initDb() {
       await runMigrations();
       await seedDefaultCategories();
+      await generateRecurringTransactions();
       setDbReady(true);
     }
     initDb();
@@ -62,6 +64,25 @@ function RootLayoutNav() {
           name="transaction/new"
           options={{
             title: 'Nouvelle transaction',
+            presentation: 'modal',
+            headerStyle: { backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#FFFFFF' },
+            headerTitleStyle: { color: colorScheme === 'dark' ? '#FFFFFF' : '#1A1C2E', fontWeight: '700' },
+            headerShadowVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="recurring/index"
+          options={{
+            title: 'Récurrences',
+            headerStyle: { backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#FFFFFF' },
+            headerTitleStyle: { color: colorScheme === 'dark' ? '#FFFFFF' : '#1A1C2E', fontWeight: '700' },
+            headerShadowVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="recurring/new"
+          options={{
+            title: 'Nouvelle récurrence',
             presentation: 'modal',
             headerStyle: { backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#FFFFFF' },
             headerTitleStyle: { color: colorScheme === 'dark' ? '#FFFFFF' : '#1A1C2E', fontWeight: '700' },

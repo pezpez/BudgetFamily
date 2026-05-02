@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import { View, ScrollView, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import {
-  Text, FAB, List, Dialog, Portal, TextInput, Button,
+  Text, FAB, Dialog, Portal, TextInput, Button,
   IconButton, Divider, Surface,
 } from 'react-native-paper';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 
 import { useCategoryStore } from '../../store/useCategoryStore';
 import { palette } from '../../constants/theme';
@@ -82,8 +83,24 @@ export default function SettingsScreen() {
   return (
     <View style={styles.root}>
       <ScrollView contentContainerStyle={styles.content}>
+        {/* Recurring shortcut */}
+        <TouchableOpacity style={styles.recurringLink} onPress={() => router.push('/recurring/index')}>
+          <View style={styles.recurringLeft}>
+            <View style={styles.recurringIcon}>
+              <MaterialCommunityIcons name="repeat" size={22} color={palette.primary} />
+            </View>
+            <View>
+              <Text variant="bodyMedium" style={styles.recurringTitle}>Récurrences</Text>
+              <Text variant="labelSmall" style={styles.recurringSubtitle}>Dépenses et revenus automatiques</Text>
+            </View>
+          </View>
+          <MaterialCommunityIcons name="chevron-right" size={22} color={palette.textSecondary} />
+        </TouchableOpacity>
+
+        <Divider style={{ marginVertical: 8 }} />
+
         <Text variant="titleMedium" style={styles.sectionTitle}>Catégories & Sous-catégories</Text>
-        <Text variant="bodySmall" style={styles.hint}>Appuyez longuement sur un élément pour le supprimer</Text>
+        <Text variant="bodySmall" style={styles.hint}>Appuyez sur la corbeille pour supprimer</Text>
 
         {categories.map((cat) => (
           <Surface key={cat.id} style={styles.catCard} elevation={1}>
@@ -230,6 +247,17 @@ const styles = StyleSheet.create({
     position: 'absolute', right: 20, bottom: 24,
     backgroundColor: palette.primary, borderRadius: 16,
   },
+  recurringLink: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    backgroundColor: '#fff', borderRadius: 16, padding: 14,
+  },
+  recurringLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  recurringIcon: {
+    width: 40, height: 40, borderRadius: 12,
+    backgroundColor: palette.primary + '22', alignItems: 'center', justifyContent: 'center',
+  },
+  recurringTitle: { color: palette.textPrimary, fontWeight: '600' },
+  recurringSubtitle: { color: palette.textSecondary, marginTop: 1 },
   dialog: { borderRadius: 20 },
   dialogInput: { marginBottom: 12, backgroundColor: 'transparent' },
   pickerLabel: { color: palette.textSecondary, marginBottom: 6, marginTop: 4 },
